@@ -1,0 +1,53 @@
+# Vagrantfile for creating a Kubernetes cluster with one control plane node and multiple worker nodes
+
+# Set the base image for the VMs
+IMAGE = "ubuntu/focal64"
+
+# Define the number of nodes for each role (control_plane or worker)
+NODE_COUNT = { control_plane: 1, worker: 2 }
+
+# Configure the VMs
+Vagrant.configure("2") do |config|
+  
+  # Enable and configure hostmanager plugin
+    config.hostmanager.enabled = true 
+    config.hostmanager.manage_host = true
+    
+  # Create the control plane node
+  (1..NODE_COUNT[:control_plane]).each do |i|
+    config.vm.define "control-plane#{i}" do |node|
+      # Set the box image for the VM
+      node.vm.box = IMAGE
+      # Configure a private network for inter-node communication
+      node.vm.network "private_network", ip: "10.0.0.#{i+100}", virtualbox__intnet: "kubernetes"
+      # Set the hostname for the VM
+      node.vm.hostname = "control-plane#{i}"
+      # Set the provider-specific options for the VM (in this case, VirtualBox)
+      node.vm.provider "virtualbox" do |vb|
+        # Allocate 2 GB of memory to the VM
+        vb.memory = "2048"
+        # Allocate 2 CPU cores to the VM
+        vb.cpus = 2
+      end
+    end
+  end
+
+  # Create the worker nodes
+  (1..NODE_COUNT[:worker]).each do |i|
+    config.vm.define "worker#{i}" do |node|
+      # Set the box image for the VM
+      node.vm.box = IMAGE
+      # Configure a private network for inter-node communication
+      node.vm.network "private_network", ip: "10.0.0.#{i+110}", virtualbox__intnet: "kubernetes"
+      # Set the hostname for the VM
+      node.vm.hostname = "worker#{i}"
+      # Set the provider-specific options for the VM (in this case, VirtualBox)
+      node.vm.provider "virtualbox" do |vb|
+        # Allocate 2 GB of memory to the VM
+        vb.memory = "2048"
+        # Allocate 2 CPU cores to the VM
+        vb.cpus = 2
+      end
+    end
+  end
+end
