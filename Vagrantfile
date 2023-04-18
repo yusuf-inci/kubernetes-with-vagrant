@@ -28,6 +28,7 @@ Vagrant.configure("2") do |config|
         vb.memory = "2048"
         # Allocate 2 CPU cores to the VM
         vb.cpus = 2
+      node.vm.synced_folder "./script", "/vagrant"
       end
     end
   end
@@ -47,6 +48,7 @@ Vagrant.configure("2") do |config|
         vb.memory = "2048"
         # Allocate 2 CPU cores to the VM
         vb.cpus = 2
+      node.vm.synced_folder "./script", "/vagrant"
       end
     end
   end
