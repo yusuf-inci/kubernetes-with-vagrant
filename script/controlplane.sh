@@ -49,16 +49,7 @@ EOF
 
   sleep 30
 
-# # Install Docker
-# sudo apt-get update
-# sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
-# # sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-# # # sudo echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-# sudo apt-get update
-# sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-# sudo systemctl start containerd
-
-# # Install kubeadm, kubelet, and kubectl
+ # Install kubeadm, kubelet, and kubectl
 
   sudo apt-get update && sudo apt-get install -y apt-transport-https curl
   curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
@@ -70,18 +61,6 @@ EOF
   sudo apt-mark hold kubelet kubeadm kubectl
   sudo systemctl stop ufw
   sudo systemctl disable ufw
-
-# sudo apt-get update
-# sudo apt-get install -y apt-transport-https curl
-# sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-# # sudo echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-# sudo mkdir -p /etc/apt/keyrings/
-# sudo chmod 0755 /etc/apt/keyrings
-# sudo mv kubernetes-archive-keyring.gpg /etc/apt/keyrings/
-# sudo apt-get update
-# sudo apt-get install -y kubelet kubeadm kubectl
-# sudo apt-mark hold kubelet kubeadm kubectl
-# Initialize the control plane node
 
 # Check if the 'cri' plugin is disabled
 if grep -q '^disabled_plugins = \["cri"\]' /etc/containerd/config.toml; then
@@ -102,7 +81,7 @@ fi
 
 sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address=10.0.0.101 > /tmp/kubeadm_out.log
 sleep 360
-# sudo kubeadm init --control-plane-endpoint "10.0.0.101:6443" --upload-certs --pod-network-cidr=10.244.0.0/16
+
 
 # configure kube config
 sudo mkdir -p /home/vagrant/.kube

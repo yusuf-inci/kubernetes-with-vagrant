@@ -29,6 +29,7 @@ Vagrant.configure("2") do |config|
         # Allocate 2 CPU cores to the VM
         vb.cpus = 2
       end
+      # Create a synced folder between the host machine's and the guest machine's
       node.vm.synced_folder "./script", "/vagrant"
       # Run the controlplane.sh script on the control plane node
       node.vm.provision "shell", path: "./script/controlplane.sh"
@@ -51,6 +52,7 @@ Vagrant.configure("2") do |config|
         # Allocate 2 CPU cores to the VM
         vb.cpus = 2
       end
+      # Create a synced folder between the host machine's and the guest machine's
       node.vm.synced_folder "./script", "/vagrant"
       # Run the controlplane.sh script on the worker nodes
       node.vm.provision "shell", path: "./script/worker.sh"
