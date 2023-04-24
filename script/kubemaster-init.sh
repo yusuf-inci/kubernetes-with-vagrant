@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Set variables values
-MASTER_IP=192.168.56.2
+MASTER_IP=10.0.0.101
 
 lsmod | grep br_netfilter
 sudo modprobe br_netfilter
@@ -55,35 +55,35 @@ else
   # (Install Docker CE)
   ## Set up the repository:
   ### Install packages to allow apt to use a repository over HTTPS
-  apt-get update && apt-get install -y \
+  sudo apt-get update && sudo apt-get install -y \
     apt-transport-https ca-certificates curl software-properties-common gnupg2
   # Add Docker's official GPG key:
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   # Add the Docker apt repository:
-  add-apt-repository \
+  sudo add-apt-repository \
     "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) \
     stable"
   # Install Docker CE
-  apt-get update && apt-get install -y \
+  sudo apt-get update && sudo apt-get install -y \
     containerd.io=1.2.13-2 \
     docker-ce=5:19.03.11~3-0~ubuntu-$(lsb_release -cs) \
     docker-ce-cli=5:19.03.11~3-0~ubuntu-$(lsb_release -cs)
   # Set up the Docker daemon
-  cat > /etc/docker/daemon.json <<EOF
-  {
-    "exec-opts": ["native.cgroupdriver=systemd"],
-    "log-driver": "json-file",
-    "log-opts": {
-      "max-size": "100m"
-    },
-    "storage-driver": "overlay2"
-  }
+  sudo tee /etc/docker/daemon.json > /dev/null <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
 EOF
-  mkdir -p /etc/systemd/system/docker.service.d
+  sudo mkdir -p /etc/systemd/system/docker.service.d
   # Restart Docker
-  systemctl daemon-reload
-  systemctl restart docker
+  sudo systemctl daemon-reload
+  sudo systemctl restart docker
   sudo systemctl enable docker
 
 fi
@@ -125,13 +125,13 @@ EOF
    sudo apt-get update
    sudo apt-get install -y kubelet kubeadm kubectl
    sudo apt-mark hold kubelet kubeadm kubectl
-   systemctl stop ufw
-   systemctl disable ufw
+   sudo systemctl stop ufw
+   sudo systemctl disable ufw
 fi
 
 #sleep 30
 
-sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address=192.168.56.2 > /tmp/kubeadm_out.log
+sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address=10.0.0.101 > /tmp/kubeadm_out.log
 sleep 360
 /vagrant/set-kubeconfig.sh
 sudo kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"

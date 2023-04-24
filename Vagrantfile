@@ -28,28 +28,30 @@ Vagrant.configure("2") do |config|
         vb.memory = "2048"
         # Allocate 2 CPU cores to the VM
         vb.cpus = 2
-      node.vm.synced_folder "./script", "/vagrant"
       end
+      node.vm.synced_folder "./script", "/vagrant"
+      # Run the controlplane.sh script on the worker node
+      node.vm.provision "shell", path: "./script/controlplane.sh"
     end
   end
 
-  # Create the worker nodes
-  (1..NODE_COUNT[:worker]).each do |i|
-    config.vm.define "worker#{i}" do |node|
-      # Set the box image for the VM
-      node.vm.box = IMAGE
-      # Configure a private network for inter-node communication
-      node.vm.network "private_network", ip: "10.0.0.#{i+110}", virtualbox__intnet: "kubernetes"
-      # Set the hostname for the VM
-      node.vm.hostname = "worker#{i}"
-      # Set the provider-specific options for the VM (in this case, VirtualBox)
-      node.vm.provider "virtualbox" do |vb|
-        # Allocate 2 GB of memory to the VM
-        vb.memory = "2048"
-        # Allocate 2 CPU cores to the VM
-        vb.cpus = 2
-      node.vm.synced_folder "./script", "/vagrant"
-      end
-    end
-  end
+  # # Create the worker nodes
+  # (1..NODE_COUNT[:worker]).each do |i|
+    # config.vm.define "worker#{i}" do |node|
+      # # Set the box image for the VM
+      # node.vm.box = IMAGE
+      # # Configure a private network for inter-node communication
+      # node.vm.network "private_network", ip: "10.0.0.#{i+110}", virtualbox__intnet: "kubernetes"
+      # # Set the hostname for the VM
+      # node.vm.hostname = "worker#{i}"
+      # # Set the provider-specific options for the VM (in this case, VirtualBox)
+      # node.vm.provider "virtualbox" do |vb|
+        # # Allocate 2 GB of memory to the VM
+        # vb.memory = "2048"
+        # # Allocate 2 CPU cores to the VM
+        # vb.cpus = 2
+      # node.vm.synced_folder "./script", "/vagrant"
+      # end
+    # end
+  # end
 end
