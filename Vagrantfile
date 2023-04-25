@@ -22,6 +22,8 @@ Vagrant.configure("2") do |config|
       node.vm.network "private_network", ip: "10.0.0.#{i+100}", virtualbox__intnet: "kubernetes"
       # Set the hostname for the VM
       node.vm.hostname = "control-plane#{i}"
+      # Port forwarding for Kubernetes Dashboard
+      node.vm.network "forwarded_port", guest: 8443, host: 8443
       # Set the provider-specific options for the VM (in this case, VirtualBox)
       node.vm.provider "virtualbox" do |vb|
         # Allocate 2 GB of memory to the VM
@@ -45,6 +47,8 @@ Vagrant.configure("2") do |config|
       node.vm.network "private_network", ip: "10.0.0.#{i+110}", virtualbox__intnet: "kubernetes"
       # Set the hostname for the VM
       node.vm.hostname = "worker#{i}"
+      # Port forwarding for Kubernetes Dashboard
+      node.vm.network "forwarded_port", guest: 8443, host: 8443 + i
       # Set the provider-specific options for the VM (in this case, VirtualBox)
       node.vm.provider "virtualbox" do |vb|
         # Allocate 2 GB of memory to the VM
